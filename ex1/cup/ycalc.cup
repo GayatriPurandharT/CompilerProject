@@ -1,0 +1,31 @@
+package src;
+import java_cup.runtime.*;
+
+
+terminal                SEMI, PLUS, MINUS, TIMES, DIVIDE;
+terminal Integer        INT;
+terminal Float          FLOAT;
+
+non terminal Object     program;
+non terminal Aexp       expr;
+
+program         ::= expr:e
+                    {:  
+                        Float f = e.getValue();
+                        System.out.println("Equivalence infix expression is : " + e.getInfixExp());
+                        System.out.println("Evaluation value is : " + (f == f.intValue() ? f.intValue()+"" : f.toString()));
+                    :};
+
+expr            ::= expr:e1 expr:e2 PLUS
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.PLUS); :}
+                | expr:e1 expr:e2 MINUS
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.MINUS); :}
+                | expr:e1 expr:e2 TIMES
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.TIMES); :}
+                | expr:e1 expr:e2 DIVIDE
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.DIVIDE); :}
+                | INT:i
+                    {: RESULT = new Aexp(i); :}
+                | FLOAT:f
+                    {: RESULT = new Aexp(f); :};
+                
