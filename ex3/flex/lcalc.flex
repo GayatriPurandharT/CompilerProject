@@ -69,7 +69,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
    one and nine followed by zero or more numbers between zero and nine
    or just a zero.  */
 int = 0 | [1-9][0-9]*
-float = {int}("."[0-9]+)?
+
 /* A identifier integer is a word beginning a letter between A and
    Z, a and z, or an underscore followed by zero or more letters
    between A and Z, a and z, zero and nine, or an underscore. */
@@ -108,8 +108,6 @@ id = [A-Za-z_][A-Za-z_0-9]*
     "do"               { return symbol(sym.DO); }
     "begin"            { return symbol(sym.BEGIN); }
     "end"              { return symbol(sym.END); }
-
-    {float}      {return symbol(sym.NUMBER, new )}
    
 
     {int}      { return symbol(sym.NUMBER, new Integer(yytext())); }

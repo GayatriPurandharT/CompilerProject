@@ -4,14 +4,12 @@ public class Aexp {
 
     private enum AexpType {
         INTEGER,
-        FLOAT,
         ID,
         EXP
     }
     
     private final AexpType eType;
     private Integer inum;
-    private Float fnum;
     private String id;
     private Args operands;
     private int operator;
@@ -19,11 +17,6 @@ public class Aexp {
     Aexp(Integer x) {
         eType = AexpType.INTEGER;
         inum = x;        
-    }
-
-    Aexp(Float x) {
-        eType = AexpType.INTEGER;
-        fnum = x;        
     }
 
     Aexp(String x) {
@@ -42,7 +35,6 @@ public class Aexp {
         String s = "";
         switch (this.eType) {
             case INTEGER: s = "" + inum; break;
-            case FLOAT: s= ""+ fnum; break;
             case ID: s = id; break;
             case EXP:
                 switch (operator) {
@@ -72,10 +64,6 @@ public class Aexp {
             case INTEGER:
                 // expression is a number
                 val = inum; break;
-                
-            case FLOAT:
-                // expression is a number
-                val = fnum; break;
             case ID:
                 //expression is a variable
                 val = SymbolTable.getValue(id);
