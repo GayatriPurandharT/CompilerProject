@@ -4,7 +4,9 @@ import java_cup.runtime.*;
 
 terminal           SEMI, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN, EQ, 
                    IF, THEN, PRINT, WHILE,  DO, BEGIN,  END;
-terminal Integer   NUMBER;
+terminal Integer   INT;
+terminal Float     FLOAT;
+terminal String    CHAR;
 terminal String    ID;
 
 non terminal Object             program;
@@ -53,13 +55,29 @@ ifthen          ::= IF expr:e THEN statement:s
 assignment      ::= ID:i EQ expr:e
                     {: RESULT = Astat.assignment(i,e); :}
                 ;
-
+/*
+boolExpr        ::= expr:e1 EQEQ expr:e2
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.EE); :}
+                | expr:e1 NE expr:e2
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.NE); :}
+                | expr:e1 GE expr:e2
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.GE); :}
+                | expr:e1 LE expr:e2
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.E); :}
+                | expr:e1 G expr:e2
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.G); :}
+                | expr:e1 L expr:e2
+                    {: RESULT = new Aexp(new Args(e1,e2), sym.L); :}
+                ;
+*/
 expr            ::= expr:e PLUS term:t
                     {: RESULT = new Aexp(new Args(e,t), sym.PLUS); :}
                 | expr:e MINUS term:t
                     {: RESULT = new Aexp(new Args(e,t), sym.MINUS); :}
                 | term:t
                     {: RESULT = t; :};
+
+
 
 term            ::= term:t TIMES factor:f
                     {: RESULT = new Aexp(new Args(t,f), sym.TIMES); :}
@@ -70,7 +88,11 @@ term            ::= term:t TIMES factor:f
 
 factor          ::= LPAREN expr:e RPAREN
                     {: RESULT = e; :}
-                | NUMBER:n
+                | INT:n
                     {: RESULT = new Aexp(n); :}
+                | FLOAT:f
+                    {: RESULT = new Aexp(f); :}
+                | CHAR:c
+                    {: RESULT = new Aexp(f, "string"); :}
                 | ID:i
                     {: RESULT = new Aexp(i); :};
