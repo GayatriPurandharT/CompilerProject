@@ -60,21 +60,27 @@ import java_cup.runtime.*;
 
 /* A line terminator is a \r (carriage return), \n (line feed), or
    \r\n. */
+
 LineTerminator = \r|\n|\r\n
 
 /* White space is a line terminator, space, tab, or line feed. */
+
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
 /* A literal integer is is a number beginning with a number between
    one and nine followed by zero or more numbers between zero and nine
    or just a zero.  */
+
+/*type = int | float | str*/
+char = \'[a-zA-Z0-9 ]*\'
 int = 0 | [1-9][0-9]*
 float = (0\.[0-9]+) | ([1-9][0-9]*\.[0-9]+)
+bool = true | false
 
 /* A identifier integer is a word beginning a letter between A and
    Z, a and z, or an underscore followed by zero or more letters
    between A and Z, a and z, zero and nine, or an underscore. */
-id = [A-Za-z_][A-Za-z_0-9]*
+//id = [A-Za-z_][A-Za-z_0-9]*
 
 %%
 /* ------------------------Lexical Rules Section---------------------- */
@@ -91,14 +97,33 @@ id = [A-Za-z_][A-Za-z_0-9]*
 <YYINITIAL> {
     /* Print the token found that was declared in the class sym and then
        return it. */
-    "+"                 { return symbol(sym.PLUS); }
-    "-"                 { return symbol(sym.MINUS); }
-    "*"                 { return symbol(sym.TIMES); }
-    "/"                 { return symbol(sym.DIVIDE); }   
+    "+"                 { System.out.println("Saw +");
+                            return symbol(sym.PLUS); }
+    "-"                 { System.out.println("Saw -");
+                            return symbol(sym.MINUS); }
+    "*"                 { System.out.println("Saw *");
+                            return symbol(sym.TIMES); }
+    "/"                 { System.out.println("Saw /");
+                            return symbol(sym.DIVIDE); }   
+    "="                 { System.out.println("Saw =");
+                            return symbol(sym.EQUAL); }
+    "intg"              { System.out.println("INTEGER TYPE");
+                            return symbol(sym.DEFINT); }
+   /* "intf"              { System.out.println("FLOAT TYPE");
+                            return symbol(sym.DEFFLOAT); }
+    "str"              { System.out.println("str TYPE");
+                            return symbol(sym.DEFSTR); }  
+*/
+     
+    {bool}               { System.out.println("Detected Bool");
+                            return symbol(sym.BOOL, new Boolean(yytext())); }
 
-    {int}               { return symbol(sym.INT, new Integer(yytext())); }
-    {float}             { return symbol(sym.FLOAT, new Float(yytext())); }
-
+    {int}               { System.out.println("Detected int");
+                            return symbol(sym.INT, new Integer(yytext())); }
+    {float}             { System.out.println("Detected float");
+                            return symbol(sym.FLOAT, new Float(yytext())); }
+    {char}              { System.out.println("Detected char");
+                            return symbol(sym.CHAR, new String(yytext())); }
     /* Don't do anything if whitespace is found */
     {WhiteSpace}       { /* just skip what was found, do nothing */ }
 }

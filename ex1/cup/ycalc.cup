@@ -2,9 +2,11 @@ package src;
 import java_cup.runtime.*;
 
 
-terminal                SEMI, PLUS, MINUS, TIMES, DIVIDE;
+terminal                SEMI, PLUS, MINUS, TIMES, DIVIDE, EQUAL;
 terminal Integer        INT;
 terminal Float          FLOAT;
+terminal String         CHAR;
+terminal Boolean        BOOL;
 
 non terminal Object     program;
 non terminal Aexp       expr;
@@ -17,7 +19,8 @@ program         ::= expr:e
                     :};
 
 expr            ::= expr:e1 expr:e2 PLUS
-                    {: RESULT = new Aexp(new Args(e1,e2), sym.PLUS); :}
+                    {: System.out.println("Plus operation");
+                         RESULT = new Aexp(new Args(e1,e2), sym.PLUS); :}
                 | expr:e1 expr:e2 MINUS
                     {: RESULT = new Aexp(new Args(e1,e2), sym.MINUS); :}
                 | expr:e1 expr:e2 TIMES
@@ -27,5 +30,9 @@ expr            ::= expr:e1 expr:e2 PLUS
                 | INT:i
                     {: RESULT = new Aexp(i); :}
                 | FLOAT:f
-                    {: RESULT = new Aexp(f); :};
+                    {: RESULT = new Aexp(f); :}
+                | CHAR:c
+                    {: RESULT = new Aexp(c); :}
+                | BOOL:b
+                    {: RESULT = new Aexp(b); :};
                 

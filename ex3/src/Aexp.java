@@ -4,12 +4,16 @@ public class Aexp {
 
     private enum AexpType {
         INTEGER,
+        FLOAT,
+        str,
         ID,
-        EXP
+        EXP 
     }
     
     private final AexpType eType;
     private Integer inum;
+    private float Fnum;
+    private String st;    
     private String id;
     private Args operands;
     private int operator;
@@ -18,7 +22,18 @@ public class Aexp {
         eType = AexpType.INTEGER;
         inum = x;        
     }
-
+    
+    Aexp(float x) {
+        eType = AexpType.FLOAT;
+        Fnum = x;        
+    }
+    
+    Aexp(String x, String s) {
+        eType = AexpType.str;
+        st = x;        
+    }
+    
+    
     Aexp(String x) {
         eType = AexpType.ID;
         id = x;        
@@ -50,6 +65,13 @@ public class Aexp {
                     case sym.DIVIDE:
                         s = "DIVIDE(" + operands.getfi().getexp() + "," + operands.getse().getexp() + ")";
                         break;
+//                    case sym.EE:
+//                        s = "EE(" + operands.getfi().getexp() + "," + operands.getse().getexp() + ")";
+//                        break;
+//                    case sym.DIVIDE:
+//                        s = "DIVIDE(" + operands.getfi().getexp() + "," + operands.getse().getexp() + ")";
+//                        break;
+                                
                     default: break;
                 } break;
             default: break;
@@ -58,12 +80,22 @@ public class Aexp {
         return s;
     }
 
-    public int getValue() {
+    public float getValue() {
         Integer val = 0;
+        float valf = 0;
+        String vals = null;
+        AexpType type = this.eType;
+        
         switch (this.eType) {
             case INTEGER:
                 // expression is a number
                 val = inum; break;
+            case FLOAT:
+                // expression is a number
+                valf = Fnum; break;
+            case str:
+                // expression is a number
+                vals = st; break;
             case ID:
                 //expression is a variable
                 val = SymbolTable.getValue(id);
@@ -75,17 +107,45 @@ public class Aexp {
                 //expression is a math expression
                 switch (operator) {
                     case sym.PLUS:
-                        val = operands.getfi().getValue() + operands.getse().getValue();
+                        if(type.equals(AexpType.INTEGER)){
+                            val = (int)operands.getfi().getValue() + (int)operands.getse().getValue();
+                        } else if(type.equals(AexpType.FLOAT)) {
+                            valf = operands.getfi().getValue() + operands.getse().getValue();
+                        } else if(type.equals(AexpType.str)) {
+                            System.out.println("Arithematic operations not possible on strings!");
+                        } 
                         break;
                     case sym.MINUS:
-                        val = operands.getfi().getValue() - operands.getse().getValue();
-                        break;
+                        if(type.equals(AexpType.INTEGER)){
+                            val = (int)operands.getfi().getValue() - (int)operands.getse().getValue();
+                        } else if(type.equals(AexpType.FLOAT)) {
+                            valf = operands.getfi().getValue() - operands.getse().getValue();
+                        }  else if(type.equals(AexpType.str)) {
+                            System.out.println("Arithematic operations not possible on strings!");
+                        } break;
                     case sym.TIMES:
-                        val = operands.getfi().getValue() * operands.getse().getValue();
-                        break;
+                        if(type.equals(AexpType.INTEGER)){
+                            val = (int)operands.getfi().getValue() * (int)operands.getse().getValue();
+                        } else if(type.equals(AexpType.FLOAT)) {
+                            valf = operands.getfi().getValue() * operands.getse().getValue();
+                        }  else if(type.equals(AexpType.str)) {
+                            System.out.println("Arithematic operations not possible on strings!");
+                        } break;
                     case sym.DIVIDE:
-                        val = operands.getfi().getValue() / operands.getse().getValue();
-                        break;
+                      if(operands.getse().getValue() != 0.0){  
+                        if(type.equals(AexpType.INTEGER)){
+                            val = (int)operands.getfi().getValue() / (int)operands.getse().getValue();
+                        } else if(type.equals(AexpType.FLOAT)) {
+                            valf = operands.getfi().getValue() / operands.getse().getValue();
+                        } else if(type.equals(AexpType.str)) {
+                            System.out.println("Arithematic operations not possible on strings!");
+                        } break;
+                      } else {
+                          System.out.println("Division by 0 not possible.");
+                          break;
+                      }  
+//                    case sym.EE:
+//                        val = boolExpression(operands.getfi(), operands.getse());
                     default:
                         break;
                 } break;
@@ -93,4 +153,11 @@ public class Aexp {
         }
         return val;
     }
+    
+    public int booleanExpression(Aexp a, Aexp b){
+    
+        return 1;
+    }
+    
+    
 }
