@@ -7,13 +7,15 @@ public class Aexp {
         FLOAT,
         str,
         ID,
+        bool,
         EXP 
     }
     
     private final AexpType eType;
     private Integer inum;
     private float Fnum;
-    private String st;    
+    private String st; 
+    private boolean boolVal;    
     private String id;
     private Args operands;
     private int operator;
@@ -28,17 +30,26 @@ public class Aexp {
         Fnum = x;        
     }
     
-    Aexp(String x, String s) {
+    Aexp(Object c) {
         eType = AexpType.str;
-        st = x;        
+//        Fnum = x;   
+        st = (String)c;
     }
+    
+//    Aexp(String x, String s) {
+//        eType = AexpType.str;
+//        st = x;        
+//    }
     
     
     Aexp(String x) {
         eType = AexpType.ID;
         id = x;        
     }
-
+    Aexp(Boolean x) {
+        eType = AexpType.bool;
+        boolVal = x;        
+    }
     Aexp(Args x, int op) {
         eType = AexpType.EXP;
         operands = x;
@@ -50,6 +61,13 @@ public class Aexp {
         String s = "";
         switch (this.eType) {
             case INTEGER: s = "" + inum; break;
+            case FLOAT:
+                // expression is a number
+                s = "" + Fnum; break;
+            case str:
+                // expression is a number
+                s = st; break;
+            
             case ID: s = id; break;
             case EXP:
                 switch (operator) {
@@ -80,66 +98,97 @@ public class Aexp {
         return s;
     }
 
-    public float getValue() {
-        Integer val = 0;
-        float valf = 0;
-        String vals = null;
+    public Object getValue() {
+//        Info returnObj = new Info();
+//        Integer val = 0;
+//        float valf = 0;
+//        String vals = null;
+        Object obj = new Object();
         AexpType type = this.eType;
         
         switch (this.eType) {
             case INTEGER:
                 // expression is a number
-                val = inum; break;
+                obj = inum; break;
             case FLOAT:
                 // expression is a number
-                valf = Fnum; break;
-            case str:
+                obj = Fnum; break;
+           case bool:
                 // expression is a number
-                vals = st; break;
+                obj = boolVal; break;
+           case str:
+                // expression is a number
+                obj = st; break;
             case ID:
                 //expression is a variable
-                val = SymbolTable.getValue(id);
-                if (val == null) {
-                    System.out.print(id + " was not declared");
-                    System.exit(0);
-                }   break;
+//                obj = ;
+                Info k = (Info)SymbolTable.globalTable.get(id);
+//                if (k.defined == false) {
+//                    System.out.print(id + " was not declared");
+//                    System.exit(0);
+//                }
+                    break;
             case EXP:
                 //expression is a math expression
                 switch (operator) {
                     case sym.PLUS:
-                        if(type.equals(AexpType.INTEGER)){
-                            val = (int)operands.getfi().getValue() + (int)operands.getse().getValue();
-                        } else if(type.equals(AexpType.FLOAT)) {
-                            valf = operands.getfi().getValue() + operands.getse().getValue();
-                        } else if(type.equals(AexpType.str)) {
-                            System.out.println("Arithematic operations not possible on strings!");
-                        } 
+                        switch (type) {
+                            case INTEGER:
+                                obj = (int)operands.getfi().getValue() + (int)operands.getse().getValue();
+                                break;
+                            case FLOAT:
+                                obj= (float)operands.getfi().getValue() + (float)operands.getse().getValue();
+                                break; 
+                            case str:
+                                System.out.println("Arithematic operations not possible on strings!");
+                                break;
+                            default:
+                                 break;
+                        }
                         break;
                     case sym.MINUS:
-                        if(type.equals(AexpType.INTEGER)){
-                            val = (int)operands.getfi().getValue() - (int)operands.getse().getValue();
-                        } else if(type.equals(AexpType.FLOAT)) {
-                            valf = operands.getfi().getValue() - operands.getse().getValue();
-                        }  else if(type.equals(AexpType.str)) {
-                            System.out.println("Arithematic operations not possible on strings!");
-                        } break;
+                        switch (type) {
+                            case INTEGER:
+                                obj = (int)operands.getfi().getValue() - (int)operands.getse().getValue();
+                                break;
+                            case FLOAT:
+                                obj= (float)operands.getfi().getValue() - (float)operands.getse().getValue();
+                                break; 
+                            case str:
+                                System.out.println("Arithematic operations not possible on strings!");
+                                break;
+                            default:
+                                 break;
+                        }
                     case sym.TIMES:
-                        if(type.equals(AexpType.INTEGER)){
-                            val = (int)operands.getfi().getValue() * (int)operands.getse().getValue();
-                        } else if(type.equals(AexpType.FLOAT)) {
-                            valf = operands.getfi().getValue() * operands.getse().getValue();
-                        }  else if(type.equals(AexpType.str)) {
-                            System.out.println("Arithematic operations not possible on strings!");
-                        } break;
+                        switch (type) {
+                            case INTEGER:
+                                obj = (int)operands.getfi().getValue() * (int)operands.getse().getValue();
+                                break;
+                            case FLOAT:
+                                obj= (float)operands.getfi().getValue() * (float)operands.getse().getValue();
+                                break; 
+                            case str:
+                                System.out.println("Arithematic operations not possible on strings!");
+                                break;
+                            default:
+                                 break;
+                        }
                     case sym.DIVIDE:
-                      if(operands.getse().getValue() != 0.0){  
-                        if(type.equals(AexpType.INTEGER)){
-                            val = (int)operands.getfi().getValue() / (int)operands.getse().getValue();
-                        } else if(type.equals(AexpType.FLOAT)) {
-                            valf = operands.getfi().getValue() / operands.getse().getValue();
-                        } else if(type.equals(AexpType.str)) {
-                            System.out.println("Arithematic operations not possible on strings!");
-                        } break;
+                      if(checkNotZero(operands.getse().getValue()) == true){  
+                        switch (type) {
+                            case INTEGER:
+                                obj = (int)operands.getfi().getValue() / (int)operands.getse().getValue();
+                                break;
+                            case FLOAT:
+                                obj= (float)operands.getfi().getValue() / (float)operands.getse().getValue();
+                                break; 
+                            case str:
+                                System.out.println("Arithematic operations not possible on strings!");
+                                break;
+                            default:
+                                 break;
+                        }
                       } else {
                           System.out.println("Division by 0 not possible.");
                           break;
@@ -151,9 +200,18 @@ public class Aexp {
                 } break;
             default: break;
         }
-        return val;
+        return obj;
     }
     
+    boolean checkNotZero(Object obj){
+        if(obj instanceof Integer || obj instanceof Float){
+            return (int)obj != 0;
+        } else {
+            System.out.println("Not a number! Division not possible");
+            return false;
+        }
+            
+    }        
     public int booleanExpression(Aexp a, Aexp b){
     
         return 1;

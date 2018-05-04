@@ -15,4 +15,8 @@ public class SymbolTable extends Hashtable<String,Object>{
     static Integer getValue(String id){
         return (Integer) globalTable.get(id);
     }
+
+    static void setValue(String assVariable, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

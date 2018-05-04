@@ -33,4 +33,8 @@ public class Astat {
             System.out.println(printE.getValue());
         }
     }
+
+    private boolean compare(float value, Object A) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
