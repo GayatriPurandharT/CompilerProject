@@ -88,7 +88,7 @@ public class Astat {
 
     public String getstat() {
         if (statementType == assignment) {
-            return assVariable + "=" + assExpr.getexp();
+            return assVariable + "=" + (String)assExpr.getexp();
         } else if (statementType == ifthen) {
             return "if " + ifcondition.getexp() + " " + ifbody.getstat();
         } else if (statementType == print) {
@@ -103,33 +103,35 @@ public class Astat {
     }
 
     public void execute() {
-
+        Object A = new Object();
+        A = 0;
+//        Info n = assExpr.getValue();
         if (statementType == assignment) {
+//            Object o = ;
             SymbolTable.setValue(assVariable, assExpr.getValue());
         } else if (statementType == ifthen) {
 
-            if (ifcondition.getValue() != 0) {
+            if ((float)ifcondition.getValue() != 0) {
                 ifbody.execute();
             }
 
         } else if (statementType == whileloop) {
-
             for (;;) {
-
-                if (whileCondition.getValue() != 0) {
+                if (!A.equals(whileCondition.getValue())) {
                     whileBody.execute();
+                    System.out.println("Executing while loop");
                 } else {
+                    System.out.println("Out of loop!");
                     break;
                 }
-
             }
-
         } else if (statementType == print) {
-
-            System.out.println(printE.getValue());
+            
+            System.out.println("value: "+printE.getValue());
 
         } else if (statementType == block) {
             for (Astat s : blockBody.statementList) {
+                System.out.println("inside block");
                 s.execute();
             }
         }

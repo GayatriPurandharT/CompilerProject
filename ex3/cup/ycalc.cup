@@ -8,6 +8,7 @@ terminal Integer   INT;
 terminal Float     FLOAT;
 terminal String    CHAR;
 terminal String    ID;
+terminal Boolean   BOOL;
 
 non terminal Object             program;
 non terminal Astat              statement, assignment, ifthen, print, while, statement_part;
@@ -93,6 +94,11 @@ factor          ::= LPAREN expr:e RPAREN
                 | FLOAT:f
                     {: RESULT = new Aexp(f); :}
                 | CHAR:c
-                    {: RESULT = new Aexp(f, "string"); :}
+                    {:  c = c.substring(1, c.length() - 1);
+                         Object a = c; 
+                        RESULT = new Aexp(a); :} 
+                | BOOL:b
+                    {: RESULT = new Aexp(b); :} 
+                
                 | ID:i
                     {: RESULT = new Aexp(i); :};

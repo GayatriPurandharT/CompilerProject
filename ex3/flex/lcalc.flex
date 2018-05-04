@@ -72,7 +72,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 char = \'[a-zA-Z0-9 ]*\'
 int = 0 | [1-9][0-9]*
 float = (0\.[0-9]+) | ([1-9][0-9]*\.[0-9]+)
-//bool = true | false
+bool = true | false
 
 /* A identifier integer is a word beginning a letter between A and
    Z, a and z, or an underscore followed by zero or more letters
@@ -117,6 +117,7 @@ id = [A-Za-z_][A-Za-z_0-9]*
     {int}      { return symbol(sym.INT, new Integer(yytext())); }
     {float}      { return symbol(sym.FLOAT, new Float(yytext())); }
     {char}      { return symbol(sym.CHAR, new String(yytext())); }
+    {bool}      { return symbol(sym.BOOL, new Boolean(yytext())); }
 
     {id}       { return symbol(sym.ID, yytext());}
 
